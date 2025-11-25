@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rig Safeguards System</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #f5f5f5;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --light: #ffffff;
+            --dark: #333333;
+            --gray: #757575;
+            --light-gray: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--light);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--primary);
+            padding: 0;
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 15px 20px;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            border-bottom-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        main {
+            padding: 30px 0;
+            min-height: calc(100vh - 140px);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Login Screen */
+        #loginScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+        }
+
+        .login-card {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .login-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-option {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .role-option:hover {
+            border-color: var(--primary);
+        }
+
+        .role-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+
+        .role-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+
+        /* Dashboard */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-pending {
+            color: var(--warning);
+        }
+
+        .stat-completed {
+            color: var(--success);
+        }
+
+        .stat-rejected {
+            color: var(--danger);
+        }
+
+        .stat-awaiting {
+            color: var(--primary);
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .recent-activity {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+        }
+
+        .activity-time {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Checklist */
+        .checklist-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+            color: var(--primary);
+        }
+
+        .checklist-item {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+
+        .checklist-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .item-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .status-completed {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .status-rejected {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+        }
+
+        .status-awaiting {
+            background-color: rgba(26, 115, 232, 0.1);
+            color: var(--primary);
+        }
+
+        .item-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-group {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .reviewer-actions {
+            background-color: rgba(26, 115, 232, 0.05);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-actions h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Reports */
+        .report-filters {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-results {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .report-table th, .report-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .report-table th {
+            background-color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .report-table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Settings */
+        .settings-section {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .notification-error {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .notification-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-tabs {
+                justify-content: flex-start;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .item-actions {
+                flex-direction: column;
+            }
+
+            .item-actions .btn {
+                width: 100%;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .item-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">RS</div>
+                    <div class="logo-text">Rig Safeguards</div>
+                </div>
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar" id="userAvatar">US</div>
+                    <div>
+                        <div id="userNameDisplay">User Name</div>
+                        <div id="userRoleDisplay" style="font-size: 14px; color: var(--gray);">Role</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <ul class="nav-tabs">
+                <li class="nav-tab active" data-page="dashboardPage">Dashboard</li>
+                <li class="nav-tab" data-page="checklistPage">Inspection Checklist</li>
+                <li class="nav-tab" data-page="reportsPage">Reports</li>
+                <li class="nav-tab" data-page="settingsPage">Settings</li>
+                <li class="nav-tab" id="logoutBtn">Logout</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen">
+            <div class="login-card">
+                <h1 class="login-title">Rig Safeguards System</h1>
+                <p style="margin-bottom: 20px;">Please log in to continue</p>
+                
+                <div class="form-group">
+                    <label for="userName">Full Name</label>
+                    <input type="text" id="userName" placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyName">Company</label>
+                    <input type="text" id="companyName" placeholder="Enter your company name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Your Role</label>
+                    <div class="role-selection">
+                        <div class="role-option" data-role="toolpusher">
+                            <div class="role-icon">👷</div>
+                            <div>Toolpusher</div>
+                        </div>
+                        <div class="role-option" data-role="driller">
+                            <div class="role-icon">⛏️</div>
+                            <div>Driller</div>
+                        </div>
+                        <div class="role-option" data-role="derrickman">
+                            <div class="role-icon">🪜</div>
+                            <div>Derrickman</div>
+                        </div>
+                        <div class="role-option" data-role="reviewer">
+                            <div class="role-icon">👨‍💼</div>
+                            <div>Reviewer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" id="loginBtn" style="width: 100%;">
+                    <span>Login</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- App Screen -->
+        <div id="appScreen" class="hidden">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page active">
+                <h2 style="margin-bottom: 20px;">Dashboard</h2>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div>Total Items</div>
+                        <div class="stat-value" id="totalItems">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Pending</div>
+                        <div class="stat-value stat-pending" id="pendingItems">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Completed</div>
+                        <div class="stat-value stat-completed" id="completedItems">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Rejected</div>
+                        <div class="stat-value stat-rejected" id="rejectedItems">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Awaiting Review</div>
+                        <div class="stat-value stat-awaiting" id="awaitingItems">0</div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-actions">
+                    <button class="btn btn-primary" id="startInspectionBtn">
+                        <span>➕</span>
+                        <span>Start New Inspection</span>
+                    </button>
+                    <button class="btn btn-outline" id="viewReportsBtn">
+                        <span>📊</span>
+                        <span>View Reports</span>
+                    </button>
+                </div>
+                
+                <div class="recent-activity">
+                    <h3 style="margin-bottom: 15px;">Recent Activity</h3>
+                    <div id="recentActivityList">
+                        <!-- Activity items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checklist Page -->
+            <div id="checklistPage" class="page">
+                <h2 style="margin-bottom: 20px;">Inspection Checklist</h2>
+                
+                <div class="dashboard-actions">
+                    <button class="btn btn-primary" id="addNewItemBtn">
+                        <span>➕</span>
+                        <span>Add New Item</span>
+                    </button>
+                    <button class="btn btn-outline" id="filterItemsBtn">
+                        <span>🔍</span>
+                        <span>Filter Items</span>
+                    </button>
+                </div>
+                
+                <div class="checklist-section" id="checklistContainer">
+                    <!-- Checklist items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div id="reportsPage" class="page">
+                <h2 style="margin-bottom: 20px;">Reports</h2>
+                
+                <div class="report-filters">
+                    <h3 style="margin-bottom: 15px;">Filter Reports</h3>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="reportSystem">System</label>
+                            <select id="reportSystem" class="form-control">
+                                <option value="">All Systems</option>
+                                <option value="Blowout Preventer">Blowout Preventer</option>
+                                <option value="Mud System">Mud System</option>
+                                <option value="Derrick & Mast">Derrick & Mast</option>
+                                <option value="Hoisting System">Hoisting System</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="reportStatus">Status</label>
+                            <select id="reportStatus" class="form-control">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="awaiting_review">Awaiting Review</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="reportDateFrom">Date From</label>
+                            <input type="date" id="reportDateFrom" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="reportDateTo">Date To</label>
+                            <input type="date" id="reportDateTo" class="form-control">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="generateReportBtn" style="margin-top: 15px;">
+                        <span>📊</span>
+                        <span>Generate Report</span>
+                    </button>
+                </div>
+                
+                <div class="report-results">
+                    <h3 style="margin-bottom: 15px;">Report Results</h3>
+                    <div class="table-container">
+                        <table class="report-table" id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>System</th>
+                                    <th>Status</th>
+                                    <th>Inspected By</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody">
+                                <!-- Report rows will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="dashboard-actions" style="margin-top: 20px;">
+                        <button class="btn btn-outline" id="exportReportBtn">
+                            <span>📥</span>
+                            <span>Export to PDF</span>
+                        </button>
+                        <button class="btn btn-outline" id="exportExcelBtn">
+                            <span>📊</span>
+                            <span>Export to Excel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page">
+                <h2 style="margin-bottom: 20px;">Settings</h2>
+                
+                <div class="settings-section">
+                    <h3>User Profile</h3>
+                    <div class="form-group">
+                        <label for="profileName">Full Name</label>
+                        <input type="text" id="profileName" class="form-control" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileCompany">Company</label>
+                        <input type="text" id="profileCompany" class="form-control" placeholder="Enter your company name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileRole">Role</label>
+                        <input type="text" id="profileRole" class="form-control" readonly>
+                    </div>
+                    <button class="btn btn-primary" id="saveProfileBtn">
+                        <span>💾</span>
+                        <span>Save Profile</span>
+                    </button>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Notifications</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="emailNotifications" checked>
+                            Email notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="pushNotifications" checked>
+                            Push notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="reminderNotifications">
+                            Reminder notifications
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" id="saveNotificationsBtn">
+                        <span>💾</span>
+                        <span>Save Notification Settings</span>
+                    </button>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>System Information</h3>
+                    <div class="detail-group">
+                        <div class="detail-label">Version</div>
+                        <div class="detail-value">1.2.0</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Last Updated</div>
+                        <div class="detail-value">June 15, 2023</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Support Contact</div>
+                        <div class="detail-value">support@rigsafeguards.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Upload Image Modal -->
+    <div class="modal" id="uploadImageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Upload Inspection Image</h3>
+                <button class="modal-close" id="closeUploadModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="imageUpload">Select Image</label>
+                    <input type="file" id="imageUpload" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="imageNotes">Notes</label>
+                    <textarea id="imageNotes" rows="3" style="width: 100%; padding: 10px; border: 1px solid var(--light-gray); border-radius: var(--border-radius);"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelUpload">Cancel</button>
+                <button class="btn btn-primary" id="confirmUpload">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div class="modal" id="imageViewerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Inspection Image</h3>
+                <button class="modal-close" id="closeImageViewer">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img id="viewedImage" src="" alt="Inspection Image" style="max-width: 100%; max-height: 400px; border-radius: var(--border-radius);">
+                <div id="imageNotesDisplay" style="margin-top: 15px; text-align: left;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Item Modal -->
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Inspection Item</h3>
+                <button class="modal-close" id="closeAddItemModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newItemTitle">Item Title</label>
+                    <input type="text" id="newItemTitle" class="form-control" placeholder="Enter item title">
+                </div>
+                <div class="form-group">
+                    <label for="newItemSystem">System</label>
+                    <select id="newItemSystem" class="form-control">
+                        <option value="Blowout Preventer">Blowout Preventer</option>
+                        <option value="Mud System">Mud System</option>
+                        <option value="Derrick & Mast">Derrick & Mast</option>
+                        <option value="Hoisting System">Hoisting System</option>
+                        <option value="Power System">Power System</option>
+                        <option value="Safety Equipment">Safety Equipment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newItemWhen">When to Engage</label>
+                    <input type="text" id="newItemWhen" class="form-control" placeholder="e.g., Before drilling operations">
+                </div>
+                <div class="form-group">
+                    <label for="newItemFrequency">Frequency</label>
+                    <select id="newItemFrequency" class="form-control">
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="As Needed">As Needed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newItemType">Inspection Type</label>
+                    <select id="newItemType" class="form-control">
+                        <option value="Visual">Visual</option>
+                        <option value="Functional">Functional</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="NDT">NDT (Non-Destructive Testing)</option>
+                        <option value="Combined">Combined</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newItemRemarks">Remarks</label>
+                    <textarea id="newItemRemarks" rows="3" class="form-control" placeholder="Enter any remarks or special instructions"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelAddItem">Cancel</button>
+                <button class="btn btn-primary" id="confirmAddItem">Add Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <script>
+        // Application State
+        const state = {
+            currentUser: null,
+            checklistItems: [],
+            recentActivities: [],
+            nextItemId: 6
+        };
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const appScreen = document.getElementById('appScreen');
+        const userInfo = document.getElementById('userInfo');
+        const userAvatar = document.getElementById('userAvatar');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userRoleDisplay = document.getElementById('userRoleDisplay');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const roleOptions = document.querySelectorAll('.role-option');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const pages = document.querySelectorAll('.page');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const checklistPage = document.getElementById('checklistPage');
+        const reportsPage = document.getElementById('reportsPage');
+        const settingsPage = document.getElementById('settingsPage');
+        const totalItems = document.getElementById('totalItems');
+        const pendingItems = document.getElementById('pendingItems');
+        const completedItems = document.getElementById('completedItems');
+        const rejectedItems = document.getElementById('rejectedItems');
+        const awaitingItems = document.getElementById('awaitingItems');
+        const recentActivityList = document.getElementById('recentActivityList');
+        const checklistContainer = document.getElementById('checklistContainer');
+        const uploadImageModal = document.getElementById('uploadImageModal');
+        const closeUploadModal = document.getElementById('closeUploadModal');
+        const cancelUpload = document.getElementById('cancelUpload');
+        const confirmUpload = document.getElementById('confirmUpload');
+        const imageViewerModal = document.getElementById('imageViewerModal');
+        const closeImageViewer = document.getElementById('closeImageViewer');
+        const viewedImage = document.getElementById('viewedImage');
+        const startInspectionBtn = document.getElementById('startInspectionBtn');
+        const viewReportsBtn = document.getElementById('viewReportsBtn');
+        const addNewItemBtn = document.getElementById('addNewItemBtn');
+        const filterItemsBtn = document.getElementById('filterItemsBtn');
+        const addItemModal = document.getElementById('addItemModal');
+        const closeAddItemModal = document.getElementById('closeAddItemModal');
+        const cancelAddItem = document.getElementById('cancelAddItem');
+        const confirmAddItem = document.getElementById('confirmAddItem');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+        const exportReportBtn = document.getElementById('exportReportBtn');
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+        const reportTableBody = document.getElementById('reportTableBody');
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        const saveNotificationsBtn = document.getElementById('saveNotificationsBtn');
+        const notificationContainer = document.getElementById('notificationContainer');
+
+        // Role avatars mapping
+        const roleAvatars = {
+            'toolpusher': 'TP',
+            'driller': 'DR',
+            'derrickman': 'DM',
+            'floorman': 'FM',
+            'mechanic': 'MC',
+            'electrician': 'EL',
+            'reviewer': 'RV'
+        };
+
+        // Sample checklist data
+        const sampleChecklistItems = [
+            {
+                id: 1,
+                title: "BOP Control System Inspection",
+                system: "Blowout Preventer",
+                whenToEngage: "Before drilling operations",
+                frequency: "Daily",
+                inspectionType: "Visual & Functional",
+                remarks: "Check for leaks and proper function",
+                status: "pending",
+                images: [],
+                notes: "",
+                inspectedBy: null,
+                reviewedBy: null,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            },
+            {
+                id: 2,
+                title: "Mud Pump Maintenance Check",
+                system: "Mud System",
+                whenToEngage: "After 250 hours of operation",
+                frequency: "Weekly",
+                inspectionType: "Mechanical",
+                remarks: "Inspect valves and liners",
+                status: "completed",
+                images: ["pump1.jpg", "pump2.jpg"],
+                notes: "All components in good condition",
+                inspectedBy: { name: "John Smith", role: "mechanic" },
+                reviewedBy: { name: "Sarah Johnson", role: "reviewer" },
+                createdAt: new Date(Date.now() - 86400000),
+                updatedAt: new Date(Date.now() - 43200000)
+            },
+            {
+                id: 3,
+                title: "Derrick Structure Inspection",
+                system: "Derrick & Mast",
+                whenToEngage: "After severe weather",
+                frequency: "Monthly",
+                inspectionType: "Visual & NDT",
+                remarks: "Check for cracks and deformation",
+                status: "awaiting_review",
+                images: ["derrick1.jpg"],
+                notes: "Minor surface rust noted",
+                inspectedBy: { name: "Mike Wilson", role: "derrickman" },
+                reviewedBy: null,
+                createdAt: new Date(Date.now() - 172800000),
+                updatedAt: new Date(Date.now() - 86400000)
+            },
+            {
+                id: 4,
+                title: "Drawworks Brake System Test",
+                system: "Hoisting System",
+                whenToEngage: "Before each tour",
+                frequency: "Daily",
+                inspectionType: "Functional",
+                remarks: "Test emergency and service brakes",
+                status: "rejected",
+                images: ["brake1.jpg"],
+                notes: "Emergency brake response time too slow",
+                inspectedBy: { name: "Robert Brown", role: "driller" },
+                reviewedBy: { name: "Sarah Johnson", role: "reviewer" },
+                createdAt: new Date(Date.now() - 259200000),
+                updatedAt: new Date(Date.now() - 172800000)
+            },
+            {
+                id: 5,
+                title: "Crown Block Sheave Inspection",
+                system: "Hoisting System",
+                whenToEngage: "After 1000 hours of operation",
+                frequency: "Monthly",
+                inspectionType: "Visual",
+                remarks: "Check for wear and alignment",
+                status: "pending",
+                images: [],
+                notes: "",
+                inspectedBy: null,
+                reviewedBy: null,
+                createdAt: new Date(Date.now() - 345600000),
+                updatedAt: new Date(Date.now() - 345600000)
+            }
+        ];
+
+        // Sample recent activities
+        const sampleRecentActivities = [
+            {
+                id: 1,
+                user: { name: "Mike Wilson", role: "derrickman", avatar: "DM" },
+                action: "submitted Derrick Structure Inspection for review",
+                time: "2 hours ago"
+            },
+            {
+                id: 2,
+                user: { name: "Sarah Johnson", role: "reviewer", avatar: "RV" },
+                action: "approved Mud Pump Maintenance Check",
+                time: "1 day ago"
+            },
+            {
+                id: 3,
+                user: { name: "Robert Brown", role: "driller", avatar: "DR" },
+                action: "rejected Drawworks Brake System Test - needs recalibration",
+                time: "2 days ago"
+            },
+            {
+                id: 4,
+                user: { name: "John Smith", role: "mechanic", avatar: "MC" },
+                action: "completed Mud Pump Maintenance Check",
+                time: "3 days ago"
+            }
+        ];
+
+        // Initialize the application
+        function init() {
+            // Check if user is already logged in
+            const savedUserData = localStorage.getItem('rigUserData');
+            if (savedUserData) {
+                const userData = JSON.parse(savedUserData);
+                state.currentUser = userData.user;
+                updateUIWithUserData();
+                loginScreen.classList.add('hidden');
+                appScreen.classList.remove('hidden');
+                loadChecklistItems();
+                loadDashboardStats();
+                loadRecentActivities();
+                loadSettings();
+            }
+
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Role selection
+            roleOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    roleOptions.forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                });
+            });
+
+            // Login button
+            loginBtn.addEventListener('click', handleLogin);
+
+            // Logout button
+            logoutBtn.addEventListener('click', handleLogout);
+
+            // Navigation tabs
+            navTabs.forEach(tab => {
+                if (tab.id !== 'logoutBtn') {
+                    tab.addEventListener('click', () => {
+                        const pageId = tab.getAttribute('data-page');
+                        switchPage(pageId);
+                    });
+                }
+            });
+
+            // Modal controls
+            closeUploadModal.addEventListener('click', () => uploadImageModal.classList.remove('active'));
+            cancelUpload.addEventListener('click', () => uploadImageModal.classList.remove('active'));
+            closeImageViewer.addEventListener('click', () => imageViewerModal.classList.remove('active'));
+            closeAddItemModal.addEventListener('click', () => addItemModal.classList.remove('active'));
+            cancelAddItem.addEventListener('click', () => addItemModal.classList.remove('active'));
+
+            // Dashboard buttons
+            startInspectionBtn.addEventListener('click', () => switchPage('checklistPage'));
+            viewReportsBtn.addEventListener('click', () => switchPage('reportsPage'));
+
+            // Checklist buttons
+            addNewItemBtn.addEventListener('click', () => addItemModal.classList.add('active'));
+            confirmAddItem.addEventListener('click', handleAddNewItem);
+
+            // Reports buttons
+            generateReportBtn.addEventListener('click', generateReport);
+            exportReportBtn.addEventListener('click', exportToPDF);
+            exportExcelBtn.addEventListener('click', exportToExcel);
+
+            // Settings buttons
+            saveProfileBtn.addEventListener('click', saveProfile);
+            saveNotificationsBtn.addEventListener('click', saveNotifications);
+        }
+
+        // Handle user login
+        function handleLogin() {
+            const userName = document.getElementById('userName').value;
+            const companyName = document.getElementById('companyName').value;
+            const selectedRole = document.querySelector('.role-option.selected');
+
+            if (!userName || !companyName || !selectedRole) {
+                showNotification('Please fill in all fields and select a role', 'error');
+                return;
+            }
+
+            const role = selectedRole.getAttribute('data-role');
+            
+            // Create user object
+            state.currentUser = {
+                name: userName,
+                company: companyName,
+                role: role,
+                avatar: roleAvatars[role] || 'US'
+            };
+
+            // Save to localStorage
+            localStorage.setItem('rigUserData', JSON.stringify({
+                user: state.currentUser,
+                loginTime: new Date()
+            }));
+
+            // Update UI
+            updateUIWithUserData();
+            loginScreen.classList.add('hidden');
+            appScreen.classList.remove('hidden');
+            
+            // Load data
+            loadChecklistItems();
+            loadDashboardStats();
+            loadRecentActivities();
+            loadSettings();
+            
+            showNotification('Login successful!', 'success');
+        }
+
+        // Handle user logout
+        function handleLogout() {
+            state.currentUser = null;
+            localStorage.removeItem('rigUserData');
+            appScreen.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            
+            // Reset form
+            document.getElementById('userName').value = '';
+            document.getElementById('companyName').value = '';
+            roleOptions.forEach(o => o.classList.remove('selected'));
+            
+            showNotification('You have been logged out', 'warning');
+        }
+
+        // Update UI with user data
+        function updateUIWithUserData() {
+            if (!state.currentUser) return;
+            
+            userAvatar.textContent = state.currentUser.avatar;
+            userNameDisplay.textContent = state.currentUser.name;
+            userRoleDisplay.textContent = state.currentUser.role.charAt(0).toUpperCase() + state.currentUser.role.slice(1);
+        }
+
+        // Switch between pages
+        function switchPage(pageId) {
+            // Update active tab
+            navTabs.forEach(tab => {
+                if (tab.getAttribute('data-page') === pageId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            // Show active page
+            pages.forEach(page => {
+                if (page.id === pageId) {
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+
+            // Load page-specific data
+            if (pageId === 'dashboardPage') {
+                loadDashboardStats();
+                loadRecentActivities();
+            } else if (pageId === 'checklistPage') {
+                loadChecklistItems();
+            } else if (pageId === 'reportsPage') {
+                generateReport();
+            } else if (pageId === 'settingsPage') {
+                loadSettings();
+            }
+        }
+
+        // Load checklist items
+        function loadChecklistItems() {
+            // In a real app, this would be an API call
+            state.checklistItems = [...sampleChecklistItems];
+            renderChecklistItems();
+        }
+
+        // Render checklist items
+        function renderChecklistItems() {
+            checklistContainer.innerHTML = '';
+            
+            // Group by system
+            const itemsBySystem = {};
+            state.checklistItems.forEach(item => {
+                if (!itemsBySystem[item.system]) {
+                    itemsBySystem[item.system] = [];
+                }
+                itemsBySystem[item.system].push(item);
+            });
+            
+            // Render each system section
+            Object.keys(itemsBySystem).forEach(system => {
+                const section = document.createElement('div');
+                section.className = 'checklist-section';
+                
+                section.innerHTML = `
+                    <h3 class="section-title">${system}</h3>
+                    ${itemsBySystem[system].map(item => renderChecklistItem(item)).join('')}
+                `;
+                
+                checklistContainer.appendChild(section);
+            });
+        }
+
+        // Render individual checklist item
+        function renderChecklistItem(item) {
+            const canReview = state.currentUser.role === 'reviewer';
+            const canEdit = !canReview || item.status === 'awaiting_review';
+            
+            return `
+                <div class="checklist-item" data-item-id="${item.id}">
+                    <div class="item-header">
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-status status-${getStatusClass(item.status)}">${getStatusText(item.status)}</div>
+                    </div>
+                    <div class="item-details">
+                        <div class="detail-group">
+                            <div class="detail-label">When to Engage</div>
+                            <div class="detail-value">${item.whenToEngage}</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Frequency</div>
+                            <div class="detail-value">${item.frequency}</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Type of Inspection</div>
+                            <div class="detail-value">${item.inspectionType}</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Remarks</div>
+                            <div class="detail-value">${item.remarks}</div>
+                        </div>
+                    </div>
+                    ${item.images && item.images.length > 0 ? `
+                        <div class="image-gallery">
+                            ${item.images.map((image, index) => `
+                                <div class="gallery-item" onclick="viewImage('${image}', '${item.notes || 'No notes available'}')">
+                                    <div style="background-color: #e0e0e0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #757575;">
+                                        <span>Image ${index + 1}</span>
+                                    </div>
+                                    <div class="overlay">Image ${index + 1}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    ${item.status === 'awaiting_review' && canReview ? `
+                        <div class="reviewer-actions">
+                            <h4>Reviewer Actions</h4>
+                            <p>This item is awaiting your approval or rejection.</p>
+                            <div class="item-actions">
+                                <button class="btn btn-success" onclick="updateItemStatus(${item.id}, 'completed')">
+                                    <span>✅</span>
+                                    <span>Approve</span>
+                                </button>
+                                <button class="btn btn-danger" onclick="updateItemStatus(${item.id}, 'rejected')">
+                                    <span>❌</span>
+                                    <span>Reject</span>
+                                </button>
+                                <button class="btn btn-outline" onclick="updateItemStatus(${item.id}, 'pending')">
+                                    <span>📝</span>
+                                    <span>Request Revision</span>
+                                </button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    <div class="item-actions">
+                        <button class="btn btn-outline" onclick="viewItemDetails(${item.id})">
+                            <span>🔍</span>
+                            <span>View Details</span>
+                        </button>
+                        ${canEdit ? `
+                            <button class="btn btn-primary" onclick="openUploadModal(${item.id})">
+                                <span>📸</span>
+                                <span>${item.images && item.images.length > 0 ? 'Add More Images' : 'Upload Image'}</span>
+                            </button>
+                        ` : ''}
+                        ${!canReview && item.status !== 'completed' && item.status !== 'rejected' ? `
+                            <button class="btn btn-success" onclick="updateItemStatus(${item.id}, 'completed')">
+                                <span>✅</span>
+                                <span>Mark Complete</span>
+                            </button>
+                            <button class="btn btn-danger" onclick="updateItemStatus(${item.id}, 'rejected')">
+                                <span>❌</span>
+                                <span>Reject/SWA</span>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get status class for styling
+        function getStatusClass(status) {
+            const statusMap = {
+                'pending': 'pending',
+                'completed': 'completed',
+                'rejected': 'rejected',
+                'awaiting_review': 'awaiting'
+            };
+            return statusMap[status] || 'pending';
+        }
+
+        // Get status text for display
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'completed': 'Completed',
+                'rejected': 'Rejected',
+                'awaiting_review': 'Awaiting Review'
+            };
+            return statusMap[status] || 'Pending';
+        }
+
+        // Update item status
+        function updateItemStatus(itemId, status) {
+            // In a real app, this would be an API call
+            const item = state.checklistItems.find(i => i.id === itemId);
+            if (item) {
+                item.status = status;
+                item.updatedAt = new Date();
+                
+                // If the current user is a reviewer and they're approving/rejecting, set reviewedBy
+                if (state.currentUser.role === 'reviewer' && (status === 'completed' || status === 'rejected')) {
+                    item.reviewedBy = {
+                        name: state.currentUser.name,
+                        role: state.currentUser.role
+                    };
+                }
+                
+                // If a non-reviewer marks as complete, set status to awaiting_review
+                if (state.currentUser.role !== 'reviewer' && status === 'completed') {
+                    item.status = 'awaiting_review';
+                }
+                
+                // Set inspectedBy if not already set
+                if (!item.inspectedBy) {
+                    item.inspectedBy = {
+                        name: state.currentUser.name,
+                        role: state.currentUser.role
+                    };
+                }
+                
+                renderChecklistItems();
+                loadDashboardStats();
+                
+                // Add to recent activities
+                addRecentActivity({
+                    user: state.currentUser,
+                    action: `${getActionText(status)} ${item.title}`,
+                    time: 'Just now'
+                });
+                
+                showNotification('Status updated successfully!', 'success');
+            }
+        }
+
+        // Get action text for activity feed
+        function getActionText(status) {
+            const actionMap = {
+                'pending': 'requested revision for',
+                'completed': 'approved',
+                'rejected': 'rejected',
+                'awaiting_review': 'submitted for review'
+            };
+            return actionMap[status] || 'updated';
+        }
+
+        // View item details
+        function viewItemDetails(itemId) {
+            const item = state.checklistItems.find(i => i.id === itemId);
+            if (item) {
+                const details = `
+                    <strong>Details for:</strong> ${item.title}<br><br>
+                    <strong>Status:</strong> ${getStatusText(item.status)}<br>
+                    <strong>System:</strong> ${item.system}<br>
+                    <strong>When to Engage:</strong> ${item.whenToEngage}<br>
+                    <strong>Frequency:</strong> ${item.frequency}<br>
+                    <strong>Inspection Type:</strong> ${item.inspectionType}<br>
+                    <strong>Remarks:</strong> ${item.remarks}<br><br>
+                    <strong>Notes:</strong> ${item.notes || 'No notes available'}<br><br>
+                    ${item.inspectedBy ? `<strong>Inspected By:</strong> ${item.inspectedBy.name} (${item.inspectedBy.role})<br>` : ''}
+                    ${item.reviewedBy ? `<strong>Reviewed By:</strong> ${item.reviewedBy.name} (${item.reviewedBy.role})<br>` : ''}
+                    <strong>Last Updated:</strong> ${item.updatedAt.toLocaleDateString()}
+                `;
+                
+                // Create a modal for details
+                const modal = document.createElement('div');
+                modal.className = 'modal active';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Inspection Details</h3>
+                            <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div>${details}</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">Close</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+        }
+
+        // Open upload modal
+        function openUploadModal(itemId) {
+            // Store the current item ID in the modal for later use
+            uploadImageModal.setAttribute('data-item-id', itemId);
+            uploadImageModal.classList.add('active');
+            
+            // Set up the upload confirmation
+            confirmUpload.onclick = () => handleImageUpload(itemId);
+        }
+
+        // Handle image upload
+        function handleImageUpload(itemId) {
+            const fileInput = document.getElementById('imageUpload');
+            const notes = document.getElementById('imageNotes').value;
+            
+            if (!fileInput.files.length) {
+                showNotification('Please select an image to upload', 'error');
+                return;
+            }
+            
+            // In a real app, this would upload to a server
+            // For this demo, we'll simulate the upload
+            
+            const item = state.checklistItems.find(i => i.id === itemId);
+            if (item) {
+                // Generate a fake image name
+                const imageName = `inspection_${itemId}_${Date.now()}.jpg`;
+                
+                if (!item.images) {
+                    item.images = [];
+                }
+                
+                item.images.push(imageName);
+                item.notes = notes || item.notes;
+                item.updatedAt = new Date();
+                
+                // If this is the first image and the item was pending, change status
+                if (item.images.length === 1 && item.status === 'pending') {
+                    item.status = 'awaiting_review';
+                }
+                
+                renderChecklistItems();
+                loadDashboardStats();
+                
+                // Add to recent activities
+                addRecentActivity({
+                    user: state.currentUser,
+                    action: `uploaded images for ${item.title}`,
+                    time: 'Just now'
+                });
+                
+                showNotification('Image uploaded successfully!', 'success');
+                
+                // Reset and close modal
+                fileInput.value = '';
+                document.getElementById('imageNotes').value = '';
+                uploadImageModal.classList.remove('active');
+            }
+        }
+
+        // View image
+        function viewImage(imageName, notes) {
+            // In a real app, this would show the actual image
+            // For this demo, we'll just show a placeholder
+            viewedImage.src = '';
+            viewedImage.alt = 'Inspection Image';
+            viewedImage.parentElement.innerHTML = `
+                <div style="padding: 40px; text-align: center; color: var(--gray);">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🖼️</div>
+                    <div>Image: ${imageName}</div>
+                    <div style="margin-top: 10px; font-size: 14px;">In a real application, this would display the actual uploaded image.</div>
+                </div>
+            `;
+            document.getElementById('imageNotesDisplay').innerHTML = `<strong>Notes:</strong> ${notes}`;
+            imageViewerModal.classList.add('active');
+        }
+
+        // Handle adding new item
+        function handleAddNewItem() {
+            const title = document.getElementById('newItemTitle').value;
+            const system = document.getElementById('newItemSystem').value;
+            const whenToEngage = document.getElementById('newItemWhen').value;
+            const frequency = document.getElementById('newItemFrequency').value;
+            const inspectionType = document.getElementById('newItemType').value;
+            const remarks = document.getElementById('newItemRemarks').value;
+            
+            if (!title || !whenToEngage) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const newItem = {
+                id: state.nextItemId++,
+                title,
+                system,
+                whenToEngage,
+                frequency,
+                inspectionType,
+                remarks,
+                status: 'pending',
+                images: [],
+                notes: '',
+                inspectedBy: null,
+                reviewedBy: null,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+            
+            state.checklistItems.push(newItem);
+            renderChecklistItems();
+            loadDashboardStats();
+            
+            // Add to recent activities
+            addRecentActivity({
+                user: state.currentUser,
+                action: `added new inspection item: ${title}`,
+                time: 'Just now'
+            });
+            
+            showNotification('New inspection item added successfully!', 'success');
+            
+            // Reset and close modal
+            document.getElementById('newItemTitle').value = '';
+            document.getElementById('newItemWhen').value = '';
+            document.getElementById('newItemRemarks').value = '';
+            addItemModal.classList.remove('active');
+        }
+
+        // Load dashboard stats
+        function loadDashboardStats() {
+            const total = state.checklistItems.length;
+            const pending = state.checklistItems.filter(item => item.status === 'pending').length;
+            const completed = state.checklistItems.filter(item => item.status === 'completed').length;
+            const rejected = state.checklistItems.filter(item => item.status === 'rejected').length;
+            const awaiting = state.checklistItems.filter(item => item.status === 'awaiting_review').length;
+            
+            totalItems.textContent = total;
+            pendingItems.textContent = pending;
+            completedItems.textContent = completed;
+            rejectedItems.textContent = rejected;
+            awaitingItems.textContent = awaiting;
+        }
+
+        // Load recent activities
+        function loadRecentActivities() {
+            state.recentActivities = [...sampleRecentActivities];
+            renderRecentActivities();
+        }
+
+        // Render recent activities
+        function renderRecentActivities() {
+            recentActivityList.innerHTML = '';
+            
+            state.recentActivities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                activityItem.innerHTML = `
+                    <div class="activity-avatar">${activity.user.avatar}</div>
+                    <div class="activity-details">
+                        <div class="activity-title">
+                            <strong>${activity.user.name}</strong> ${activity.action}
+                        </div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                
+                recentActivityList.appendChild(activityItem);
+            });
+        }
+
+        // Add a recent activity
+        function addRecentActivity(activity) {
+            state.recentActivities.unshift({
+                id: Date.now(),
+                ...activity
+            });
+            
+            // Keep only the 5 most recent activities
+            if (state.recentActivities.length > 5) {
+                state.recentActivities = state.recentActivities.slice(0, 5);
+            }
+            
+            renderRecentActivities();
+        }
+
+        // Generate report
+        function generateReport() {
+            const systemFilter = document.getElementById('reportSystem').value;
+            const statusFilter = document.getElementById('reportStatus').value;
+            const dateFrom = document.getElementById('reportDateFrom').value;
+            const dateTo = document.getElementById('reportDateTo').value;
+            
+            let filteredItems = [...state.checklistItems];
+            
+            // Apply filters
+            if (systemFilter) {
+                filteredItems = filteredItems.filter(item => item.system === systemFilter);
+            }
+            
+            if (statusFilter) {
+                filteredItems = filteredItems.filter(item => item.status === statusFilter);
+            }
+            
+            if (dateFrom) {
+                const fromDate = new Date(dateFrom);
+                filteredItems = filteredItems.filter(item => new Date(item.updatedAt) >= fromDate);
+            }
+            
+            if (dateTo) {
+                const toDate = new Date(dateTo);
+                filteredItems = filteredItems.filter(item => new Date(item.updatedAt) <= toDate);
+            }
+            
+            // Render report table
+            reportTableBody.innerHTML = '';
+            
+            if (filteredItems.length === 0) {
+                reportTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px; color: var(--gray);">
+                            No items match the selected filters
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.title}</td>
+                    <td>${item.system}</td>
+                    <td><span class="item-status status-${getStatusClass(item.status)}">${getStatusText(item.status)}</span></td>
+                    <td>${item.inspectedBy ? item.inspectedBy.name : 'Not inspected'}</td>
+                    <td>${item.updatedAt.toLocaleDateString()}</td>
+                `;
+                reportTableBody.appendChild(row);
+            });
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            showNotification('Exporting to PDF...', 'success');
+            // In a real app, this would generate a PDF report
+            setTimeout(() => {
+                showNotification('PDF report generated successfully!', 'success');
+            }, 1500);
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            showNotification('Exporting to Excel...', 'success');
+            // In a real app, this would generate an Excel report
+            setTimeout(() => {
+                showNotification('Excel report generated successfully!', 'success');
+            }, 1500);
+        }
+
+        // Load settings
+        function loadSettings() {
+            if (!state.currentUser) return;
+            
+            document.getElementById('profileName').value = state.currentUser.name;
+            document.getElementById('profileCompany').value = state.currentUser.company;
+            document.getElementById('profileRole').value = state.currentUser.role.charAt(0).toUpperCase() + state.currentUser.role.slice(1);
+            
+            // Load notification settings from localStorage
+            const notificationSettings = localStorage.getItem('rigNotificationSettings');
+            if (notificationSettings) {
+                const settings = JSON.parse(notificationSettings);
+                document.getElementById('emailNotifications').checked = settings.email || false;
+                document.getElementById('pushNotifications').checked = settings.push || false;
+                document.getElementById('reminderNotifications').checked = settings.reminder || false;
+            }
+        }
+
+        // Save profile
+        function saveProfile() {
+            const name = document.getElementById('profileName').value;
+            const company = document.getElementById('profileCompany').value;
+            
+            if (!name || !company) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            state.currentUser.name = name;
+            state.currentUser.company = company;
+            
+            // Update localStorage
+            const savedUserData = localStorage.getItem('rigUserData');
+            if (savedUserData) {
+                const userData = JSON.parse(savedUserData);
+                userData.user = state.currentUser;
+                localStorage.setItem('rigUserData', JSON.stringify(userData));
+            }
+            
+            // Update UI
+            updateUIWithUserData();
+            
+            showNotification('Profile updated successfully!', 'success');
+        }
+
+        // Save notification settings
+        function saveNotifications() {
+            const email = document.getElementById('emailNotifications').checked;
+            const push = document.getElementById('pushNotifications').checked;
+            const reminder = document.getElementById('reminderNotifications').checked;
+            
+            const settings = {
+                email,
+                push,
+                reminder
+            };
+            
+            localStorage.setItem('rigNotificationSettings', JSON.stringify(settings));
+            
+            showNotification('Notification settings saved!', 'success');
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span>
+                <span>${message}</span>
+            `;
+            
+            notificationContainer.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Hide and remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
